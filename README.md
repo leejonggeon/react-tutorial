@@ -1,3 +1,6 @@
+## Management System
+본 프로젝트는 React 튜토리얼 학습 목적으로 생성되었습니다.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
