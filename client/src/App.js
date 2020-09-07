@@ -21,6 +21,7 @@ const styles = theme => ({
   }
 })
 
+/*
 const customers = [
 {
   'id': 1,
@@ -47,8 +48,28 @@ const customers = [
   'job': 'Designer'
 }
 ]
+*/
 
 class App extends Component{
+
+  state = {
+    customers: ""
+  }
+
+  /* Refer to the component lifecycle */
+  componentDidMount(){
+    this.callApi().then(res => this.setState({customers:res})).catch(err => console.log(err));
+  }
+
+  callApi = async () => {
+    const response = await fetch('/api/customers');
+    const body = await response.json();
+    return body;
+  }
+
+  /*
+  { this.state.customers ? this.state.customers.map(c => { return (<Customer key={c.id} id={c.id} image={c.image} name={c.name} birth={c.birth} gender={c.gender} job={c.job} />); })}
+  */
 
   render() {
 
@@ -68,7 +89,7 @@ class App extends Component{
           </TableRow>
         </TableHead>
         <TableBody>
-          {customers.map(c => { return (<Customer key={c.id} id={c.id} image={c.image} name={c.name} birth={c.birth} gender={c.gender} job={c.job} />); })}
+            {this.state.customers ? this.state.customers.map(c => { return (<Customer key={c.id} id={c.id} image={c.image} name={c.name} birth={c.birth} gender={c.gender} job={c.job} />); }) : ""}
         </TableBody>
       </Table>
       </Paper >
