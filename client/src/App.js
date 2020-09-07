@@ -9,6 +9,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import { withStyles } from '@material-ui/core/styles';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const styles = theme => ({
   root: {
@@ -18,46 +19,35 @@ const styles = theme => ({
   },
   table: {
     minWidth: 1080
+  },
+  progress: {
+    margin: theme.spacing.unit * 2
   }
 })
 
+
 /*
-const customers = [
-{
-  'id': 1,
-  'image': 'http://placeimg.com/64/64/1',
-  'name':'Mr.Hong',
-  'birth': '961222',
-  'gender': 'male',
-  'job': 'student'
-},
-{
-  'id': 2,
-  'image': 'http://placeimg.com/64/64/2',
-  'name':'Mr.JJJ',
-  'birth': '961122',
-  'gender': 'male',
-  'job': 'programmer'
-},
-{
-  'id': 3,
-  'image': 'http://placeimg.com/64/64/3',
-  'name':'ParkHyeWon',
-  'birth': '941011',
-  'gender': 'female',
-  'job': 'Designer'
-}
-]
-*/
+  React Component Life Cycle
+    1) Constructor()
+   2) componentWillMount()
+   3) render()
+   4) componentDidMount()
+
+   if prop or state is changed, 
+   shouldComponentUpdate() would be called, then shouldComponentUpdate() calls render()
+ */
+
 
 class App extends Component{
 
   state = {
-    customers: ""
+    customers: "",
+    completed: 0
   }
 
   /* Refer to the component lifecycle */
   componentDidMount(){
+    this.timer = setInterval(this.progress, 20);
     this.callApi().then(res => this.setState({customers:res})).catch(err => console.log(err));
   }
 
@@ -65,6 +55,11 @@ class App extends Component{
     const response = await fetch('/api/customers');
     const body = await response.json();
     return body;
+  }
+
+  progress = () => {
+    const { completed } = this.state;
+    this.setState( {completed: completed >= 100 ? 0 : completed + 1} );
   }
 
   /*
@@ -89,7 +84,14 @@ class App extends Component{
           </TableRow>
         </TableHead>
         <TableBody>
-            {this.state.customers ? this.state.customers.map(c => { return (<Customer key={c.id} id={c.id} image={c.image} name={c.name} birth={c.birth} gender={c.gender} job={c.job} />); }) : ""}
+            {this.state.customers ? this.state.customers.map(c => { return (<Customer key={c.id} id={c.id} image={c.image} name={c.name} birth={c.birth} gender={c.gender} job={c.job} />); }) 
+            : 
+            <TableRow>
+              <TableCell colSpan="6" align="center" >
+                <CircularProgress className={classes.progress} variant="determinate" value={this.state.completed} />
+              </TableCell>
+            </TableRow>
+            }
         </TableBody>
       </Table>
       </Paper >
